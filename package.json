@@ -9,7 +9,7 @@
     "lint": "next lint",
     "prepare": "husky install",
     "check:ts": "tsc --noEmit",
-    "prettify": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'"
+    "prettify": "prettier --write src/**/*.{js,jsx,ts,tsx}"
   },
   "dependencies": {
     "@emotion/react": "^11.10.5",

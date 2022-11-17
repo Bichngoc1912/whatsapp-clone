@@ -3,5 +3,5 @@
 
 echo "husky running....."
 
-# yarn prettify
+yarn prettify
 yarn check:ts
