@@ -7,6 +7,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import SearchIcon from '@mui/icons-material/Search';
 import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
+import { signOut } from "firebase/auth";
+import { auth } from "@/configs/firebase";
 
 const StyledContainer = styled.div`
   height: 100vh;
@@ -59,6 +61,14 @@ const StyledSidebarButton = styled(Button)`
 `;
 
 export const Sidebar = () => {
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <StyledContainer>
       <StyledHeader>
@@ -75,7 +85,7 @@ export const Sidebar = () => {
             <MoreVerticalIcon />
           </IconButton>
 
-          <IconButton>
+          <IconButton onClick={() => handleLogout()}>
             <LogoutIcon />
           </IconButton>
         </div>
