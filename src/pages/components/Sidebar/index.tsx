@@ -6,11 +6,36 @@ import MoreVerticalIcon from "@material-ui/icons/MoreVert";
 import LogoutIcon from '@mui/icons-material/Logout';
 import SearchIcon from '@mui/icons-material/Search';
 import IconButton from "@material-ui/core/IconButton";
+import Button from "@material-ui/core/Button";
 
-const StyledContainer = styled.div``;
-const StyledHeader = styled.div``;
-const StyledSearch = styled.div``;
-const StyledSidebarButton = styled.button``;
+const StyledContainer = styled.div`
+  height: 100vh;
+  min-width: 300px;
+  max-width: 350px;
+  overflow-y: scroll;
+  border-right: 1px solid whitesmoke;
+`;
+
+const StyledHeader = styled.div`
+  display: flex;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: white;
+  justify-content: space-between;
+  padding: 15px;
+  height: 80px;
+  border-bottom: 1px solid whitesmoke;
+  align-items: center;
+`;
+
+const StyledSearch = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-radius: 2px;
+`;
+
 const StyledUserAvatar = styled(Avatar)`
   cursor: pointer;
   :hover {
@@ -18,12 +43,27 @@ const StyledUserAvatar = styled(Avatar)`
   }
 `;
 
+const StyledSearchInput = styled.input`
+  outline: none;
+  border: none;
+  flex: 1;
+`;
+
+const StyledSidebarButton = styled(Button)`
+  width: 100% !important; 
+  border-top: 1px solid whitesmoke !important;
+  border-bottom: 1px solid whitesmoke !important;  
+  color: #0369A1 !important;  
+  font-weight: 550 !important;  
+  text-transform: uppercase !important;  
+`;
+
 export const Sidebar = () => {
   return (
     <StyledContainer>
       <StyledHeader>
         <Tooltip title='user email..' placement="right">
-         <StyledUserAvatar />
+          <StyledUserAvatar />
         </Tooltip>
 
         <div>
@@ -40,9 +80,14 @@ export const Sidebar = () => {
           </IconButton>
         </div>
       </StyledHeader>
-      <StyledSearch></StyledSearch>
+      <StyledSearch>
+        <SearchIcon />
+        <StyledSearchInput placeholder='Search in conversations' />
+      </StyledSearch>
 
-      <StyledSidebarButton></StyledSidebarButton>
+      <StyledSidebarButton>
+        Start a new conversation
+      </StyledSidebarButton>
     </StyledContainer>
   )
 };
