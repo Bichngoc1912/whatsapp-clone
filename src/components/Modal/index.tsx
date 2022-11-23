@@ -12,7 +12,7 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: 300,
   bgcolor: 'background.paper',
   border: '2px solid #0891B2',
   boxShadow: 24,
@@ -41,7 +41,7 @@ const MyModal = (props: MyModalProps) => {
           <Image
             src={HiImg}
             alt='hi, helo helo :D'
-            width={400}
+            width={300}
             height={200}
           />
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
