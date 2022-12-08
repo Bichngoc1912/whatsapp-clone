@@ -145,6 +145,7 @@ export const Sidebar = () => {
         Start a new conversation
       </StyledSidebarButton>
 
+      
       <FormDialog 
         closeNewConversationDialog={closeNewConversationDialog}
         isOpenDialog={isOpenNewConversationDialog} 
