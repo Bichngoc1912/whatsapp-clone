@@ -8,7 +8,14 @@ import SearchIcon from '@mui/icons-material/Search';
 import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
 import { signOut } from "firebase/auth";
-import { auth } from "@/configs/firebase";
+import { auth, db } from "@/configs/firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { useState, useMemo } from 'react';
+import FormDialog from '@/components/DialogForm';
+import * as EmailValidator from 'email-validator';
+import { addDoc, collection, query, where } from "firebase/firestore";
+import { useCollection } from 'react-firebase-hooks/firestore';
+import { Conversation } from "@/types";
 
 const StyledContainer = styled.div`
   height: 100vh;
@@ -61,6 +68,20 @@ const StyledSidebarButton = styled(Button)`
 `;
 
 export const Sidebar = () => {
+  const [loggedInUser, _loading, _error] = useAuthState(auth);
+  const [isOpenNewConversationDialog, setIsOpenNewConversationDialog] = useState(false);
+  const [receiptEmail, setReceiptEmail] = useState('');
+
+  const toggleNewConversationDialog = (isOpen: boolean) => {
+    setIsOpenNewConversationDialog(isOpen);
+
+    if (!isOpen) setReceiptEmail('');
+  }
+
+  const closeNewConversationDialog = () => {
+    toggleNewConversationDialog(false);
+  }
+
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -69,11 +90,36 @@ export const Sidebar = () => {
     }
   };
 
+  const isInvitingSeft = useMemo(() => {
+    return receiptEmail === loggedInUser?.email;
+  }, [loggedInUser?.email, receiptEmail]);
+
+  //check if conversation already exits beween the current logged in user and recipient
+  const queryGetConversattionsForCurrentUsser = query(collection(db, 'conversation'), 
+  where('users', 'array-contains', loggedInUser?.email)) ;
+  const [conversationsSnapshot, __loading, __error] = useCollection(queryGetConversattionsForCurrentUsser);
+  
+  const isConversationAlreadyExists = (recipientEmail: string) => {
+    return conversationsSnapshot?.docs.find(conversation => (conversation.data() as Conversation).user.includes(recipientEmail));
+  };
+
+  const createConversation = async () => {
+    if (!receiptEmail) return 
+
+    if (EmailValidator.validate(receiptEmail) && !isInvitingSeft && !isConversationAlreadyExists(receiptEmail)) {
+      await addDoc(collection(db, 'conversations'), {
+        users: [loggedInUser?.email, receiptEmail]
+      })
+    }
+
+    closeNewConversationDialog();
+  }
+
   return (
     <StyledContainer>
       <StyledHeader>
-        <Tooltip title='user email..' placement="right">
-          <StyledUserAvatar />
+        <Tooltip title={loggedInUser?.email as string} placement="right">
+          <StyledUserAvatar src={loggedInUser?.photoURL || ''} />
         </Tooltip>
 
         <div>
@@ -95,9 +141,18 @@ export const Sidebar = () => {
         <StyledSearchInput placeholder='Search in conversations' />
       </StyledSearch>
 
-      <StyledSidebarButton>
+      <StyledSidebarButton onClick={() => toggleNewConversationDialog(true)}>
         Start a new conversation
       </StyledSidebarButton>
+
+      <FormDialog 
+        closeNewConversationDialog={closeNewConversationDialog}
+        isOpenDialog={isOpenNewConversationDialog} 
+        toggleNewDialog={toggleNewConversationDialog}
+        receiptEmail={receiptEmail}
+        createConversation={createConversation}
+        setReceiptEmail={setReceiptEmail}
+      />
     </StyledContainer>
   )
 };
