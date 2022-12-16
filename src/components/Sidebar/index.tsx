@@ -96,15 +96,14 @@ export const Sidebar = () => {
   }, [loggedInUser?.email, receiptEmail]);
 
   //check if conversation already exits beween the current logged in user and recipient
-  const queryGetConversattionsForCurrentUsser = query(collection(db, 'conversation'), 
+  const queryGetConversattionsForCurrentUsser = query(collection(db, 'conversations'), 
   where('users', 'array-contains', loggedInUser?.email)) ;
   const [conversationsSnapshot, __loading, __error] = useCollection(queryGetConversattionsForCurrentUsser);
   
   const isConversationAlreadyExists = (recipientEmail: string) => {
-    return conversationsSnapshot?.docs.find(conversation => (conversation.data() as Conversation).user.includes(recipientEmail));
+    return conversationsSnapshot?.docs.find(conversation => (conversation.data() as Conversation).users.includes(recipientEmail));
   };
 
-  console.log('conversationsSnapshot', conversationsSnapshot?.docs);
   const createConversation = async () => {
     if (!receiptEmail) return 
 
@@ -147,12 +146,14 @@ export const Sidebar = () => {
         Start a new conversation
       </StyledSidebarButton>
 
-      {conversationsSnapshot?.docs?.map(conversation => (
-        <ConversationSelect 
-          key={conversation.id} 
-          id={conversation.id}
-          converssationUser={(conversation.data() as Conversation).user}
-        />))
+      {conversationsSnapshot?.docs?.map((conversation, idx) => {
+        return (
+          <ConversationSelect 
+            key={conversation.id} 
+            id={conversation.id}
+            converssationUser={(conversation.data() as Conversation).users}
+          />)
+      })
       }
       <FormDialog 
         closeNewConversationDialog={closeNewConversationDialog}

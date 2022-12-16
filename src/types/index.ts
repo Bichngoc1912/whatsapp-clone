@@ -1,3 +1,9 @@
 export interface Conversation {
-  user: string[];
+  users: string[];
+}
+
+export interface AppUser {
+  email: string;
+  lastSeen: TimeRanges;
+  photoURL: string;
 }

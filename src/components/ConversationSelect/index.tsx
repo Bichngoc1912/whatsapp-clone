@@ -1,7 +1,10 @@
+import { useReciptient } from "@/hooks/useReceipient";
 import { Conversation } from "@/types";
+import { useRouter } from "next/router";
 import styled from "styled-components";
+import RecipientAvatar from "../RecipientAvatar";
 
-const ConversationSelect = ({ id, converssationUser }: {id: string; converssationUser: Conversation['user']}) => {
+const ConversationSelect = ({ id, converssationUser }: {id: string; converssationUser: Conversation['users']}) => {
   const StyledContainer = styled.div`
   display: flex;
   align-items: center;
@@ -13,12 +16,17 @@ const ConversationSelect = ({ id, converssationUser }: {id: string; converssatio
     background-color: #e9eaeb;
   }
   `
-  console.log('hhhihihiihih');
+  const { recipient, recipientEmail } = useReciptient(converssationUser);
+  const router = useRouter();
+
+  const onSelectConversation = () => {
+    router.push(`/conversations/${id}`)
+  }
 
   return (
-    <StyledContainer> 
-      ------- uar gif day 
-      {id} - {converssationUser}
+    <StyledContainer onClick={onSelectConversation}> 
+      <RecipientAvatar recipient={recipient} recipientEmail={recipientEmail} />
+      <span>{recipientEmail}</span>
     </StyledContainer>
   )
 }
