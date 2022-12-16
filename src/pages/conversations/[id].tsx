@@ -1,8 +1,9 @@
 import { Sidebar } from '@/components/Sidebar';
 import { auth, db } from '@/configs/firebase';
-import { Conversation } from '@/types';
+import { Conversation, IMessage } from '@/types';
+import { generateQueryGetMessages, transformMessage } from '@@/utils/getMessageInConversation';
 import { getReceipitientEmail } from '@@/utils/getRecipientEmail';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, getDocs } from 'firebase/firestore';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -10,6 +11,7 @@ import styled from 'styled-components';
 
 interface ConversationProps {
   conversation: Conversation;
+  messages: IMessage[];
 }
 
 export const getServerSideProps: GetServerSideProps<
@@ -22,9 +24,15 @@ export const getServerSideProps: GetServerSideProps<
   const conversationRef = doc(db, 'conversations', conversationId as string);
   const conversationSnapshot = await getDoc(conversationRef);
 
+  //get all messages between logged in user and recipient in this conversation 
+  const queryMessages = generateQueryGetMessages(conversationId); 
+  const messagesSnapshot = await getDocs(queryMessages);
+  const messages = messagesSnapshot.docs.map(messageDoc => transformMessage(messageDoc));
+
   return {
     props: {
       conversation: conversationSnapshot.data() as Conversation,
+      messages: messages
     },
   };
 };
@@ -33,7 +41,7 @@ const StyledContainer = styled.div`
   display: flex;
 `;
 
-function ConversationPage({ conversation }: ConversationProps) {
+function ConversationPage({ conversation, messages }: ConversationProps) {
   const [loggedInUser, __loading, __error] = useAuthState(auth);
 
   return (
@@ -45,7 +53,10 @@ function ConversationPage({ conversation }: ConversationProps) {
       </Head>
 
       <Sidebar />
-      <h1>MESSAGE</h1>
+      
+      {
+        messages.map(message => <p key={message.id}>{JSON.stringify(message)}</p>)
+      }
     </StyledContainer>
   );
 }
