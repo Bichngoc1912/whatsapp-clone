@@ -16,6 +16,7 @@ import * as EmailValidator from 'email-validator';
 import { addDoc, collection, query, where } from "firebase/firestore";
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { Conversation } from "@/types";
+import ConversationSelect from "../ConversationSelect";
 
 const StyledContainer = styled.div`
   height: 100vh;
@@ -103,6 +104,7 @@ export const Sidebar = () => {
     return conversationsSnapshot?.docs.find(conversation => (conversation.data() as Conversation).user.includes(recipientEmail));
   };
 
+  console.log('conversationsSnapshot', conversationsSnapshot?.docs);
   const createConversation = async () => {
     if (!receiptEmail) return 
 
@@ -145,7 +147,13 @@ export const Sidebar = () => {
         Start a new conversation
       </StyledSidebarButton>
 
-      
+      {conversationsSnapshot?.docs?.map(conversation => (
+        <ConversationSelect 
+          key={conversation.id} 
+          id={conversation.id}
+          converssationUser={(conversation.data() as Conversation).user}
+        />))
+      }
       <FormDialog 
         closeNewConversationDialog={closeNewConversationDialog}
         isOpenDialog={isOpenNewConversationDialog} 

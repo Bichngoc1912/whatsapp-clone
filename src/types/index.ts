@@ -1,3 +1,3 @@
 export interface Conversation {
-  user: string;
+  user: string[];
 }
