@@ -1,5 +1,5 @@
-import { useReciptient } from "@/hooks/useReceipient";
-import { AppUser } from "@/types";
+import { useReciptient } from '@/hooks/useReceipient';
+import { AppUser } from '@/types';
 
 type UserRecipientReturnType = ReturnType<typeof useReciptient>;
 

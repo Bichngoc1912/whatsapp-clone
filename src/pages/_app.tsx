@@ -9,33 +9,34 @@ import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 
 export default function App({ Component, pageProps }: AppProps) {
   const [loggedInUser, loading, error] = useAuthState(auth);
- 
+
   useEffect(() => {
-    const setUserInDb = async() => {
+    const setUserInDb = async () => {
       try {
         await setDoc(
-          doc(db, 'users', loggedInUser?.email as string), {
+          doc(db, 'users', loggedInUser?.email as string),
+          {
             email: loggedInUser?.email,
             lastSeen: serverTimestamp(),
             photoURL: loggedInUser?.photoURL,
           },
           {
             merge: true, // just update what is changed
-          }
-        )
-      }catch(error) {
+          },
+        );
+      } catch (error) {
         console.log('ERROR SETTING USER', error);
       }
-    }
+    };
 
     if (loggedInUser) {
-      setUserInDb()
+      setUserInDb();
     }
   }, [loggedInUser]);
 
-  if (loading) return <Loading />
+  if (loading) return <Loading />;
 
-  if (!loggedInUser) return <LoginPage />
-  
+  if (!loggedInUser) return <LoginPage />;
+
   return <Component {...pageProps} />;
 }

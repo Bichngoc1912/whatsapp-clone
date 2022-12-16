@@ -1,22 +1,22 @@
-import Avatar from "@material-ui/core/Avatar";
-import styled from "styled-components";
-import Tooltip from "@material-ui/core/Tooltip";
-import ChatIcon from "@material-ui/icons/Chat";
-import MoreVerticalIcon from "@material-ui/icons/MoreVert";
+import Avatar from '@material-ui/core/Avatar';
+import styled from 'styled-components';
+import Tooltip from '@material-ui/core/Tooltip';
+import ChatIcon from '@material-ui/icons/Chat';
+import MoreVerticalIcon from '@material-ui/icons/MoreVert';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SearchIcon from '@mui/icons-material/Search';
-import IconButton from "@material-ui/core/IconButton";
-import Button from "@material-ui/core/Button";
-import { signOut } from "firebase/auth";
-import { auth, db } from "@/configs/firebase";
-import { useAuthState } from "react-firebase-hooks/auth";
+import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
+import { signOut } from 'firebase/auth';
+import { auth, db } from '@/configs/firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { useState, useMemo } from 'react';
 import FormDialog from '@/components/DialogForm';
 import * as EmailValidator from 'email-validator';
-import { addDoc, collection, query, where } from "firebase/firestore";
+import { addDoc, collection, query, where } from 'firebase/firestore';
 import { useCollection } from 'react-firebase-hooks/firestore';
-import { Conversation } from "@/types";
-import ConversationSelect from "../ConversationSelect";
+import { Conversation } from '@/types';
+import ConversationSelect from '../ConversationSelect';
 
 const StyledContainer = styled.div`
   height: 100vh;
@@ -60,12 +60,12 @@ const StyledSearchInput = styled.input`
 `;
 
 const StyledSidebarButton = styled(Button)`
-  width: 100% !important; 
+  width: 100% !important;
   border-top: 1px solid whitesmoke !important;
-  border-bottom: 1px solid whitesmoke !important;  
-  color: #0369A1 !important;  
-  font-weight: 550 !important;  
-  text-transform: uppercase !important;  
+  border-bottom: 1px solid whitesmoke !important;
+  color: #0369a1 !important;
+  font-weight: 550 !important;
+  text-transform: uppercase !important;
 `;
 
 export const Sidebar = () => {
@@ -77,11 +77,11 @@ export const Sidebar = () => {
     setIsOpenNewConversationDialog(isOpen);
 
     if (!isOpen) setReceiptEmail('');
-  }
+  };
 
   const closeNewConversationDialog = () => {
     toggleNewConversationDialog(false);
-  }
+  };
 
   const handleLogout = async () => {
     try {
@@ -96,25 +96,35 @@ export const Sidebar = () => {
   }, [loggedInUser?.email, receiptEmail]);
 
   //check if conversation already exits beween the current logged in user and recipient
-  const queryGetConversattionsForCurrentUsser = query(collection(db, 'conversations'), 
-  where('users', 'array-contains', loggedInUser?.email)) ;
-  const [conversationsSnapshot, __loading, __error] = useCollection(queryGetConversattionsForCurrentUsser);
-  
+  const queryGetConversattionsForCurrentUsser = query(
+    collection(db, 'conversations'),
+    where('users', 'array-contains', loggedInUser?.email),
+  );
+  const [conversationsSnapshot, __loading, __error] = useCollection(
+    queryGetConversattionsForCurrentUsser,
+  );
+
   const isConversationAlreadyExists = (recipientEmail: string) => {
-    return conversationsSnapshot?.docs.find(conversation => (conversation.data() as Conversation).users.includes(recipientEmail));
+    return conversationsSnapshot?.docs.find((conversation) =>
+      (conversation.data() as Conversation).users.includes(recipientEmail),
+    );
   };
 
   const createConversation = async () => {
-    if (!receiptEmail) return 
+    if (!receiptEmail) return;
 
-    if (EmailValidator.validate(receiptEmail) && !isInvitingSeft && !isConversationAlreadyExists(receiptEmail)) {
+    if (
+      EmailValidator.validate(receiptEmail) &&
+      !isInvitingSeft &&
+      !isConversationAlreadyExists(receiptEmail)
+    ) {
       await addDoc(collection(db, 'conversations'), {
-        users: [loggedInUser?.email, receiptEmail]
-      })
+        users: [loggedInUser?.email, receiptEmail],
+      });
     }
 
     closeNewConversationDialog();
-  }
+  };
 
   return (
     <StyledContainer>
@@ -125,7 +135,7 @@ export const Sidebar = () => {
 
         <div>
           <IconButton>
-            <ChatIcon/>
+            <ChatIcon />
           </IconButton>
 
           <IconButton>
@@ -139,7 +149,7 @@ export const Sidebar = () => {
       </StyledHeader>
       <StyledSearch>
         <SearchIcon />
-        <StyledSearchInput placeholder='Search in conversations' />
+        <StyledSearchInput placeholder="Search in conversations" />
       </StyledSearch>
 
       <StyledSidebarButton onClick={() => toggleNewConversationDialog(true)}>
@@ -148,21 +158,21 @@ export const Sidebar = () => {
 
       {conversationsSnapshot?.docs?.map((conversation, idx) => {
         return (
-          <ConversationSelect 
-            key={conversation.id} 
+          <ConversationSelect
+            key={conversation.id}
             id={conversation.id}
             converssationUser={(conversation.data() as Conversation).users}
-          />)
-      })
-      }
-      <FormDialog 
+          />
+        );
+      })}
+      <FormDialog
         closeNewConversationDialog={closeNewConversationDialog}
-        isOpenDialog={isOpenNewConversationDialog} 
+        isOpenDialog={isOpenNewConversationDialog}
         toggleNewDialog={toggleNewConversationDialog}
         receiptEmail={receiptEmail}
         createConversation={createConversation}
         setReceiptEmail={setReceiptEmail}
       />
     </StyledContainer>
-  )
+  );
 };

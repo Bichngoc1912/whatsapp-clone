@@ -1,9 +1,9 @@
-import { Button } from "@material-ui/core";
-import Head from "next/head";
-import styled from "styled-components";
-import Image from "next/image";
+import { Button } from '@material-ui/core';
+import Head from 'next/head';
+import styled from 'styled-components';
+import Image from 'next/image';
 import WhatsAppLogo from '@/assets/images/avatar1.jpg';
-import { auth } from "@/configs/firebase";
+import { auth } from '@/configs/firebase';
 import { useSignInWithGoogle } from 'react-firebase-hooks/auth';
 import MyModal from '@/components/Modal';
 import { useState } from 'react';
@@ -35,13 +35,13 @@ const StyledImageWrapper = styled.div`
 
 const StyledButtonLogin = styled(Button)`
   padding: 5px 15px !important;
-  color: #0891B2 !important;
+  color: #0891b2 !important;
   font-weight: 700 !important;
-  border: 1px solid #0891B2 !important;
+  border: 1px solid #0891b2 !important;
   :hover {
     text-decoration: none !important;
-    color: #06B6D4 !important; 
-    background-color: transparent !important; 
+    color: #06b6d4 !important;
+    background-color: transparent !important;
   }
 `;
 
@@ -71,33 +71,34 @@ const LoginPage = () => {
 
         <StyledLoginContainer>
           <StyledImageWrapper>
-            <Image 
-              src={WhatsAppLogo} 
-              alt='whatsapp logo'
+            <Image
+              src={WhatsAppLogo}
+              alt="whatsapp logo"
               width={200}
               height={200}
               style={{ borderRadius: '50%' }}
             />
           </StyledImageWrapper>
 
-          <StyledButtonLogin 
-            variant='outlined' 
-            onClick={() => {signInWithGoogle()}}
+          <StyledButtonLogin
+            variant="outlined"
+            onClick={() => {
+              signInWithGoogle();
+            }}
           >
             Sign in with google
           </StyledButtonLogin>
         </StyledLoginContainer>
       </StyledContainer>
-      
+
       <MyModal
-        isOpen={isOpenModal} 
-        isAutoClose={true} 
-        handleCloseModal={handleCloseModel} 
-        handleOpenModal={handleOpenModel} 
+        isOpen={isOpenModal}
+        isAutoClose={true}
+        handleCloseModal={handleCloseModel}
+        handleOpenModal={handleOpenModel}
       />
     </>
-  
-  )
-}
+  );
+};
 
 export default LoginPage;

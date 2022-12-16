@@ -8,12 +8,12 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { DialogFormProps } from './types';
 
 export default function FormDialog(props: DialogFormProps) {
-  const { 
-    isOpenDialog, 
-    receiptEmail, 
-    setReceiptEmail, 
+  const {
+    isOpenDialog,
+    receiptEmail,
+    setReceiptEmail,
     closeNewConversationDialog,
-    createConversation
+    createConversation,
   } = props;
 
   return (
@@ -22,7 +22,7 @@ export default function FormDialog(props: DialogFormProps) {
         <DialogTitle>New Conversation</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Please enter a Google email address for the user 
+            Please enter a Google email address for the user
           </DialogContentText>
           <TextField
             autoFocus
@@ -32,7 +32,7 @@ export default function FormDialog(props: DialogFormProps) {
             fullWidth
             variant="standard"
             value={receiptEmail}
-            onChange={e => {
+            onChange={(e) => {
               setReceiptEmail(e.target.value);
             }}
           />
